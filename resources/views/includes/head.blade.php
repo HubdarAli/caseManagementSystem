@@ -20,7 +20,7 @@
 </script>
 <!-- Icons -->
 <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-<link rel="shortcut icon" href="{{-- asset('assets/media/favicons/favicon.ico') --}}">
+{{-- <link rel="shortcut icon" href="asset('assets/media/favicons/favicon.ico')"> --}}
 <!-- END Icons -->
 
 <!-- Stylesheets -->

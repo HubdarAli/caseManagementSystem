@@ -60,8 +60,8 @@
                                             <div class="block-content">
                                                 <div class="p-sm-3 px-lg-2 px-xxl-5 py-lg-3">
                                                     <div class="text-center mb-3">
-                                                        {{-- <img src="{{ asset('assets/media/photos/logo1.png') }}"
-                                                            width="380" class="img-fluid" alt="" /> --}}
+                                                        <img src="{{ asset('assets/media/photos/logo-new.jpg') }}"
+                                                            width="380" class="img-fluid" alt="" />
                                                     </div>
                                                     <form class="js-validation-signin" action="{{ route('login') }}"
                                                         method="POST" id="login-form">

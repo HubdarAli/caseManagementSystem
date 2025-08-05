@@ -6,6 +6,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CourtCaseController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistrictController;
@@ -45,6 +46,9 @@ Route::group(['middleware' => ['auth','menu.component']], function () {
 
     //court routes
     Route::resource('court', CourtController::class);
+    
+    //courts-cases routes
+    Route::resource('courts-cases', CourtCaseController::class);
 
     //Profile routes
     Route::group(['prefix' => 'Profile'], function () {
