@@ -27,7 +27,7 @@
             class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center py-2 text-center text-md-start">
             <div class="flex-grow-1 mb-1 mb-md-0">
                 <h1 class="h3 fw-bold mb-1">
-                    Edit District
+                    District
                 </h1>
             </div>
             <div class="mt-3 mt-md-0 ms-md-3 space-x-1">
@@ -38,7 +38,7 @@
         </div>
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Edit District</h3>
+                <h3 class="block-title">District</h3>
             </div>
             <div class="block-content block-content-full">
                 <form class=" g-3 align-items-center" id="edit-form" action="{{ route('district.update', $district->id) }}"
@@ -47,14 +47,13 @@
                     @csrf
                     <div class="row p-1">
                         <div class="col-6 mt-3">
-                            <label class="form-label" for="example-if-name">District Name</label><span
-                                class="text-danger">*</span>
+                            <label class="form-label" for="example-if-name">District Name</label>
                             <input type="hidden" name="id" value="{{ $district->id }}">
                             <input type="text" class="form-control" id="" value="{{ $district->name }}"
-                                name="name" placeholder="Name">
+                                name="name" placeholder="Name" disabled>
                         </div>
-                        {{-- <div class="col-6 mt-3">
-                            <label class="form-label">Code</label><span class="text-danger">*</span>
+                        <div class="col-6 mt-3">
+                            <label class="form-label">Code</label>
                             <input type="number" class="form-control" id="code" disabled
                                 oninput="this.value = this.value.slice(0, 2);" value="{{ $district->code }}"
                                 placeholder="Enter Code">
@@ -62,27 +61,20 @@
                         <div class="col-6 mt-3">
                             <label class="form-label" for="latitude">Latitude</label>
                             <input type="text" class="form-control" value="{{ $district->latitude }}"
-                                name="latitude" placeholder="Latitude" oninput="validateCoordinates(this)">
+                                name="latitude" placeholder="Latitude" oninput="validateCoordinates(this)" disabled>
                         </div>
                         <div class="col-6 mt-3">
                             <label class="form-label" for="longitude">Longitude</label>
                             <input type="text" class="form-control" value="{{ $district->longitude }}"
-                                name="longitude" placeholder="Longitude" oninput="validateCoordinates(this)">
-                        </div> --}}
+                                name="longitude" placeholder="Longitude" oninput="validateCoordinates(this)" disabled>
+                        </div>
 
                         <!-- <div class="col-6 mt-3">
                   <label class="form-label">Short Code</label><span class="text-danger">*</span>
                   <input type="text" class="form-control" id="" value="{{ $district->formatted_shortcode }}" name="short_code" placeholder="Enter Short Code">
                 </div> -->
                     </div>
-
-
-
-                    <div class="row mt-2 text-end">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-success">Update</button>
-                        </div>
-                    </div>
+                
                 </form>
             </div>
         </div>
@@ -116,12 +108,12 @@
                     //     required: true,
                     //     alphaOnly: true,
                     // },
-                    // code: {
-                    //     required: true,
-                    //     digits: true,
-                    //     maxlength: 2,
-                    //     minlength: 2,
-                    // },
+                    code: {
+                        required: true,
+                        digits: true,
+                        maxlength: 2,
+                        minlength: 2,
+                    },
                 },
                 messages: {
                     name: {

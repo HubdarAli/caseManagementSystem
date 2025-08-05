@@ -42,12 +42,12 @@
     <div id="page-container">
         <main id="main-container">
             <div class="bg-image" style="background-image: url("{{ asset('assets/media/photos/photo28@2x.jpg') }}");">
-                <div class="row g-0 bg-primary-dark-op">
-                    <div class="hero-static col-lg-5 d-flex flex-column align-items-center bg-body-extra-light">
+                <div class="row g-0 bg-body-extra-light">
+                    <div class="hero-static col-lg-12 d-flex flex-column align-items-center ">
                         <div class="hero-static d-flex align-items-center">
                             <div class="content">
                                 <div class="row justify-content-center push">
-                                    <div class="col-md-11">
+                                    <div class="col-md-12">
                                         <!-- Sign In Block -->
                                         <div class="block block-rounded mb-0">
                                             <div class="block-header block-header-default">
@@ -60,8 +60,8 @@
                                             <div class="block-content">
                                                 <div class="p-sm-3 px-lg-2 px-xxl-5 py-lg-3">
                                                     <div class="text-center mb-3">
-                                                        <img src="{{ asset('assets/media/photos/logo1.png') }}"
-                                                            width="380" class="img-fluid" alt="" />
+                                                        {{-- <img src="{{ asset('assets/media/photos/logo1.png') }}"
+                                                            width="380" class="img-fluid" alt="" /> --}}
                                                     </div>
                                                     <form class="js-validation-signin" action="{{ route('login') }}"
                                                         method="POST" id="login-form">
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hero-static col-lg-7 d-none d-lg-flex flex-column justify-content-center">
+                    {{-- <div class="hero-static col-lg-7 d-none d-lg-flex flex-column justify-content-center">
                         <div class="p-4 p-xl-5 flex-grow-1 d-flex align-items-center">
                             <div class="w-100">
                                 <h4 class="link-fx fw-semibold fs-2 text-white">
@@ -136,7 +136,7 @@
                             </p>
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </main>

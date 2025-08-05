@@ -46,7 +46,7 @@ class MenuComponentMiddleware
             Session::put('selected_component', $selectedComponent);
         }
 
-        if (empty($selectedComponent)) return to_route('dashboard');
+        // if (empty($selectedComponent)) return to_route('dashboard');
 
         return $next($request);
     }

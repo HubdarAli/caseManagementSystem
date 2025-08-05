@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Livelihood;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DistrictRequest;
-use App\Models\District;
-use App\Models\Taluka;
-use Exception;
 use Illuminate\Http\Request;
+use App\Models\District;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -18,32 +16,21 @@ class DistrictController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:district-list', ['only' => ['index']]);
-        $this->middleware('permission:district-show', ['only' => ['show']]);
-        $this->middleware('permission:district-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:district-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:district-delete', ['only' => ['destroy']]);
+        // $this->middleware('permission:district-list', ['only' => ['index']]);
+        // $this->middleware('permission:district-show', ['only' => ['show']]);
+        // $this->middleware('permission:district-create', ['only' => ['create', 'store']]);
+        // $this->middleware('permission:district-edit', ['only' => ['edit', 'update']]);
+        // $this->middleware('permission:district-delete', ['only' => ['destroy']]);
     }
 
     public function index(Request $request)
     {
 
         try {
-            // $districts = District::latest()->get();
-            // echo '<pre>'; print_r($districts->toArray()); echo '</pre>'; die('----CALL----');
-            
-            $user = Auth::user();
-            // Check if the user has any assigned districts
-            $districts = $user->districts()->latest()->get();
-    
-            //If the user has no assigned districts, fetch all districts
-            if ($districts->isEmpty()) {
-                $districts = District::latest()->get();
-            }
-            
+
             if ($request->ajax()) {
 
-                //$districts = District::latest()->get();
+                $districts = District::latest()->get();
                 return DataTables::of($districts)
                     ->addIndexColumn()
                     ->addColumn('action', function ($district) {
@@ -65,8 +52,8 @@ class DistrictController extends Controller
                         </a>";
 
                         if (Auth::user()->can('district-show'))
-                        $actions .=
-                            "<a class='dropdown-item' href=' " . route('district.show', $district) . " '>
+                            $actions .=
+                                "<a class='dropdown-item' href=' " . route('district.show', $district) . " '>
                         <span class='" . $classes . "'>
                         
                             Show
@@ -131,30 +118,18 @@ class DistrictController extends Controller
      */
     public function store(Request $request)
     {
-
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'unique:districts,name',
         ]);
-        // dd('After if');
-        $district_code =   District::count();
 
-        // $count = padAndIncrement($district_code);
-        $count = check_district_code();
-
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $input = $request->all();
         $input['name'] = ucwords($request->name);
-
-        $input['coordinates'] = json_encode([
-            'latitude' => $input['latitude'],
-            'longitude' => $input['longitude'],
-        ]);
-
-        if(empty($input['latitude']) || empty($input['longitude'])){
-            unset($input['coordinates']);
-        }
-
-        $input['code'] = $count;
+        //add slug for the district
+        $input['slug'] = Str::slug($input['name'], '-');
         $input['created_by'] = Auth::user()->id;
 
         try {
@@ -173,14 +148,6 @@ class DistrictController extends Controller
      */
     public function show(District $district)
     {
-        // $coordinates = json_decode($district->gps_coordinates, true);
-   
-        $coordinates = json_decode($district->coordinates, true);
-
-
-        $district->latitude  = $coordinates['latitude'] ?? '';
-        $district->longitude = $coordinates['longitude'] ?? '';
-
         try {
             return view('district.show', compact('district'));
         } catch (Exception $e) {
@@ -196,14 +163,6 @@ class DistrictController extends Controller
      */
     public function edit(District $district)
     {
-        // $coordinates = json_decode($district->gps_coordinates, true);
-   
-        $coordinates = json_decode($district->coordinates, true);
-
-
-        $district->latitude  = $coordinates['latitude'] ?? '';
-        $district->longitude = $coordinates['longitude'] ?? '';
-
         try {
             return view('district.edit', compact('district'));
         } catch (Exception $e) {
@@ -218,23 +177,21 @@ class DistrictController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DistrictRequest $request, District $district)
+    public function update(Request $request, District $district)
     {
-        $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'name' => 'unique:districts,name,' . $district->id,
         ]);
-        $input = $request->all();
-        $input['name'] = ucwords($request->name);
 
-        $input['coordinates'] = json_encode([
-            'latitude' => $input['latitude'],
-            'longitude' => $input['longitude'],
-        ]);
-
-        if(empty($input['latitude']) || empty($input['longitude'])){
-            unset($input['coordinates']);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $input = $request->all();
+        $input['name'] = ucwords($request->name);
+        //add slug for the district
+        $input['slug'] = Str::slug($input['name'], '-');
         $input['updated_by'] = Auth::user()->id;
         try {
             $district->update($input);
@@ -256,10 +213,6 @@ class DistrictController extends Controller
 
         try {
             $district = District::find($id);
-            $taluka = Taluka::where('district_id', $id)->first();
-            if ($taluka) {
-                return back()->with('alert-danger', 'First Delete Taluka of this district');
-            }
             $district->delete();
             $district->deleted_by = Auth::user()->id;
             $district->save();
@@ -267,13 +220,5 @@ class DistrictController extends Controller
         } catch (Exception $e) {
             return back()->with('alert-danger', Env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong');
         }
-    }
-
-
-
-    public function getTalukasByDistrict($district_id)
-    {
-        $talukas = Taluka::where('district_id', $district_id)->get();
-        return response()->json($talukas);
     }
 }

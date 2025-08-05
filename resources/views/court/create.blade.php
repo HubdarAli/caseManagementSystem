@@ -49,7 +49,7 @@
                                 <input type="text" class="form-control" id="name" name="name"
                                     placeholder="Enter Name" value="{{ old('name') }}">
                             </div>
-                            {{-- <div class="col-6 mt-3">
+                            <div class="col-6 mt-3">
                                 <label class="form-label" for="latitude">Latitude</label>
                                 <input type="text" class="form-control" id="latitude" name="latitude"
                                     placeholder="Enter Latitude" value="{{ old('latitude') }}"
@@ -60,7 +60,7 @@
                                 <input type="text" class="form-control" id="longitude" name="longitude"
                                        placeholder="Enter Longitude" value="{{ old('longitude') }}"
                                        oninput="validateCoordinates(this)">
-                            </div> --}}
+                            </div>
                             <!-- <div class="col-6 mt-3">
                                 <label class="form-label">Short Code </label><span class="text-danger">*</span>
                                 <input type="text" class="form-control" id="" name="short_code" placeholder="Enter Short Code" value="{{ old('short_code') }}">

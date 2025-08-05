@@ -1,11 +1,11 @@
 <!-- Side Header -->
 <div class="content-header">
     <!-- Logo -->
-    <a class="fw-semibold text-dual" href="{{ route('home') }}">
+    <a class="fw-semibold text-dual" href="{{ route('dashboard') }}">
         <span class="smini-visible">
-            <img src="{{ asset('assets/media/photos/inner-logo-icon.png') }}" height="55" alt=""
+            <img src="{{-- asset('assets/media/photos/inner-logo-icon.png') --}}" height="55" alt=""
                 style="position:absolute; top:3px; left:3px;" /> </span>
-        <span class="smini-hide fs-5 tracking-wider"><img src="{{ asset('assets/media/photos/inner-logo.png') }}"
+        <span class="smini-hide fs-5 tracking-wider"><img src="{{-- asset('assets/media/photos/inner-logo.png') --}}"
                 class="img-fluid  px-3" alt="" /></span>
     </a>
     <!-- END Logo -->

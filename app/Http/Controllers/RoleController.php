@@ -14,6 +14,7 @@ use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RolesExport;
 use App\Models\ExportColumnPermissions;
+use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
@@ -24,12 +25,12 @@ class RoleController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:role-list', ['only' => ['index']]);
-        $this->middleware('permission:role-show', ['only' => ['show']]);
-        $this->middleware('permission:role-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:role-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:role-manage-export-columns', ['only' => ['manageExportColumns', 'RoleExportSave']]);
+        // $this->middleware('permission:role-list', ['only' => ['index']]);
+        // $this->middleware('permission:role-show', ['only' => ['show']]);
+        // $this->middleware('permission:role-create', ['only' => ['create', 'store']]);
+        // $this->middleware('permission:role-edit', ['only' => ['edit', 'update']]);
+        // $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        // $this->middleware('permission:role-manage-export-columns', ['only' => ['manageExportColumns', 'RoleExportSave']]);
     }
 
     /**
@@ -85,14 +86,6 @@ class RoleController extends Controller
                         </span>
                     </a>";
 
-                    if (Auth::user()->can('role-manage-export-columns'))
-                        $actions .=
-                            "<a class='dropdown-item' href=' " . route('roles.manage-export-columns', $role) . " '>
-                        <span class='" . $classes . "'>
-                            Manage Export Columns
-                        </span>
-                    </a>";
-
                     if (Auth::user()->can('role-delete'))
                         $actions .= "
                             <a class='dropdown-item'
@@ -135,8 +128,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(
-            $request,
+        $validator = Validator::make(
+            $request->all(),
             [
                 'name' => 'required|unique:roles,name',
                 'group_id' => 'required',
@@ -148,11 +141,19 @@ class RoleController extends Controller
             ]
         );
 
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $role = Role::create([
             'name' => $request->input('name'),
             'group_id' => $request->input('group_id')
         ]);
-        $role->syncPermissions($request->input('permission'));
+
+        $permissionIds = $request->input('permission');
+        $permissionNames = Permission::whereIn('id', $permissionIds)->pluck('name')->toArray();
+
+        $role->syncPermissions($permissionNames);
 
         return redirect()->route('roles.index')
             ->with('alert-success', 'Role created successfully');
@@ -197,18 +198,27 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         $role = Role::find($id);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'          => 'required|unique:roles,name,' . $role->id,
+                'group_id'      => 'required',
+                'permission'    => 'required',
+            ]
+        );
 
-        $this->validate($request, [
-            'name'          => 'required|unique:roles,name,' . $role->id,
-            'group_id'      => 'required',
-            'permission'    => 'required',
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $role->name     = $request->input('name');
         $role->group_id = $request->input('group_id');
         $role->save();
 
-        $role->syncPermissions($request->input('permission'));
+        $permissionIds = $request->input('permission');
+        $permissionNames = Permission::whereIn('id', $permissionIds)->pluck('name')->toArray();
+
+        $role->syncPermissions($permissionNames);
 
         return redirect()->route('roles.index')
             ->with('alert-success', 'Role updated successfully');
@@ -248,7 +258,7 @@ class RoleController extends Controller
                 'id'        => $parentPermission['id'],
                 'name'      => $parentPermission['name'],
                 'parent_id' => $parentPermission['parent_id'],
-                'component' => $parentPermission['component'],
+                // 'component' => $parentPermission['component'],
                 'subMenus'  => [],
                 'checked'   => in_array($parentPermission['id'], array_column($role_permissions, 'id')),
             ];
@@ -258,7 +268,7 @@ class RoleController extends Controller
                     'id'              => $midLevelPermission['id'],
                     'name'            => $midLevelPermission['name'],
                     'parent_id'       => $midLevelPermission['parent_id'],
-                    'component'       => $midLevelPermission['component'],
+                    // 'component'       => $midLevelPermission['component'],
                     'permission_type' => $midLevelPermission['permission_type'],
                     'subMenus'        => [],
                     'checked'         => in_array($midLevelPermission['id'], array_column($role_permissions, 'id')),
@@ -269,7 +279,7 @@ class RoleController extends Controller
                         'id'              => $childPermission['id'],
                         'name'            => $childPermission['name'],
                         'parent_id'       => $childPermission['parent_id'],
-                        'component'       => $childPermission['component'],
+                        // 'component'       => $childPermission['component'],
                         'permission_type' => $childPermission['permission_type'],
                         'checked'         => in_array($childPermission['id'], array_column($role_permissions, 'id')),
                     ];

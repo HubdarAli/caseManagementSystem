@@ -128,6 +128,7 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
+        
         // Create Roles
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $advocate = Role::firstOrCreate(['name' => 'advocate']);

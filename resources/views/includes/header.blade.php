@@ -65,7 +65,7 @@
 
     <div class="d-flex align-items-center">
         <!-- User Dropdown -->
-        <a href="{{ route('home') }}" class="btn btn-sm btn-secondary">
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-secondary">
             <i class="fa fa-repeat"></i>
         </a>
         <div class="dropdown d-inline-block ms-2">

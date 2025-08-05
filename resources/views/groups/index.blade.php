@@ -58,10 +58,20 @@
         $(document).ready(function() {
             var rowIdToDelete;
 
+            // $('#deleteModal').on('show.bs.modal', function(event) {
+            //     var button = $(event.relatedTarget);
+            //     rowIdToDelete = button.data('row-id');
+            //     $('#deleteForm').attr('action', "{{-- route('', '') --}}" + "/" + rowIdToDelete);
+            // });
+            
             $('#deleteModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
-                rowIdToDelete = button.data('row-id');
-                $('#deleteForm').attr('action', "{{ route('groups.destroy', '') }}" + "/" + rowIdToDelete);
+                var rowIdToDelete = button.data('row-id');
+
+                // Get the base route from a data attribute or set it via Blade
+                var baseUrl = "{{ route('groups.destroy', ['group' => '__id__']) }}".replace('__id__', rowIdToDelete);
+
+                $('#deleteForm').attr('action', baseUrl);
             });
 
             $('#groups-table').DataTable({

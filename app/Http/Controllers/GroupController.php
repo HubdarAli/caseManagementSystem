@@ -10,16 +10,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class GroupController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:group-list', ['only' => ['index']]);
-        $this->middleware('permission:group-show', ['only' => ['show']]);
-        $this->middleware('permission:group-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:group-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:group-delete', ['only' => ['destroy']]);
+        // $this->middleware('permission:group-list', ['only' => ['index']]);
+        // $this->middleware('permission:group-show', ['only' => ['show']]);
+        // $this->middleware('permission:group-create', ['only' => ['create', 'store']]);
+        // $this->middleware('permission:group-edit', ['only' => ['edit', 'update']]);
+        // $this->middleware('permission:group-delete', ['only' => ['destroy']]);
     }
 
     public function index(Request $request)
@@ -100,11 +102,16 @@ class GroupController extends Controller
     public function store(Request $request)
     {
 
-
-        $this->validate($request, [
+        //write validation rules
+        $validator = Validator::make($request->all(), [
             'name' => 'required|unique:groups,group_name',
             'parent_permission' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } 
+
         $data = $request->all();
         try {
             // Assuming you have retrieved data from the form or any other source
@@ -170,11 +177,16 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         $group = Group::findOrFail($id);
-
-        $this->validate($request, [
+        
+        //write validation rules
+        $validator = Validator::make($request->all(), [
             'name'          => 'required|unique:groups,group_name,' . $group->id,
             'parent_permission' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } 
 
         $data = $request->all();
         try {
@@ -226,8 +238,9 @@ class GroupController extends Controller
      * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Group $group)
+    public function destroy($id)
     {
+        $group = Group::findOrFail($id);
         if ($group->roles()->count() > 0) {
             return redirect()->route('groups.index')
                 ->with('alert-danger', 'Group cannot be deleted as it has associated roles.');

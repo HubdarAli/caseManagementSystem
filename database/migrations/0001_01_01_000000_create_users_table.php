@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('group_id')->nullable(); // For user groups
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');//->unique();
             // is_active field to indicate if the user is active or not
             $table->tinyInteger('is_active')->default(1); // 1 for active, 0 for inactive
             $table->timestamp('email_verified_at')->nullable();

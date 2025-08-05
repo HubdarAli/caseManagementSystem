@@ -53,7 +53,7 @@
                             <input type="text" class="form-control" id="" value="{{ $district->name }}"
                                 name="name" placeholder="Name">
                         </div>
-                        {{-- <div class="col-6 mt-3">
+                        <div class="col-6 mt-3">
                             <label class="form-label">Code</label><span class="text-danger">*</span>
                             <input type="number" class="form-control" id="code" disabled
                                 oninput="this.value = this.value.slice(0, 2);" value="{{ $district->code }}"
@@ -68,7 +68,7 @@
                             <label class="form-label" for="longitude">Longitude</label>
                             <input type="text" class="form-control" value="{{ $district->longitude }}"
                                 name="longitude" placeholder="Longitude" oninput="validateCoordinates(this)">
-                        </div> --}}
+                        </div>
 
                         <!-- <div class="col-6 mt-3">
                   <label class="form-label">Short Code</label><span class="text-danger">*</span>
@@ -116,12 +116,12 @@
                     //     required: true,
                     //     alphaOnly: true,
                     // },
-                    // code: {
-                    //     required: true,
-                    //     digits: true,
-                    //     maxlength: 2,
-                    //     minlength: 2,
-                    // },
+                    code: {
+                        required: true,
+                        digits: true,
+                        maxlength: 2,
+                        minlength: 2,
+                    },
                 },
                 messages: {
                     name: {

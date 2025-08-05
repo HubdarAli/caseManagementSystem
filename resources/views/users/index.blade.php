@@ -36,26 +36,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <div class="col-3">
-                <label class="form-label" for="example-select">SMPs</label>
-                <select class="form-select select2" id="smp_id" name="smp_id">
-                    <option selected value="">Select</option>
-                    @if (!empty($smps))
-                        {{-- @if (Auth::user()->smp->name ?? null)
-                            <option value="{{ Auth::user()->smp->id }}" selected>{{ Auth::user()->smp->name }}</option>
-                        @else --}}
-                        {{-- <option value="" {{ session('filter_labour_smp_id') == '' ? 'selected' : '' }}>Select
-                        </option> --}}
-                        @foreach ($smps as $smp)
-                            <option value="{{ $smp->id }}"
-                                {{ session('filter_labour_smp_id') == $smp->id ? 'selected' : '' }}>
-                                {{ $smp->name }}
-                            </option>
-                        @endforeach
-                        {{-- @endif --}}
-                    @endif
-                </select>
-            </div>
-            <div class="col-3">
                 <label class="form-label" for="example-select">Group</label>
                 <select class="form-select select2" id="group_id" name="group_id">
                     <option selected value="">Select</option>
@@ -101,7 +81,6 @@
                 <h3 class="block-title">Manage User Accounts</h3>
                 {{-- <a class="btn btn-sm btn-info text-white me-1 my-2" href="{{ route('users.export') }}">Export Users</a> --}}
                 <form action="{{ route('users.export') }}" method="GET">
-                    <input type="hidden" name="smp_id" id="export_smp_id" value="">
                     <input type="hidden" name="group_id" id="export_group_id" value="">
                     <button type="submit" class="btn btn-sm btn-info text-white me-1 my-2">Export Users</button>
                 </form>
@@ -117,10 +96,7 @@
                             <th class="text-center">No</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>District</th>
-                            <th>Taluka</th>
                             <th>Group</th>
-                            <th>SMP Name</th>
                             <th>Roles</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -146,8 +122,12 @@
 
             $('#deleteModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
-                rowIdToDelete = button.data('row-id');
-                $('#deleteForm').attr('action', "{{ route('users.destroy', '') }}" + "/" + rowIdToDelete);
+                var rowIdToDelete = button.data('row-id');
+
+                // Get the base route from a data attribute or set it via Blade
+                var baseUrl = "{{ route('users.destroy', ['user' => '__id__']) }}".replace('__id__', rowIdToDelete);
+
+                $('#deleteForm').attr('action', baseUrl);
             });
 
             var table = $('#permissions-table').DataTable({
@@ -156,7 +136,6 @@
                 ajax: {
                     url: "{{ route('users.index') }}",
                     data: function(d) {
-                        d.smp_id = $('#smp_id').val();
                         d.group_id = $('#group_id').val();
                     }
                 },
@@ -184,20 +163,8 @@
                         name: 'email'
                     },
                     {
-                        data: 'district',
-                        name: 'district'
-                    },
-                    {
-                        data: 'taluka',
-                        name: 'taluka'
-                    },
-                    {
                         data: 'group',
                         name: 'group'
-                    },
-                    {
-                        data: 'smp_name',
-                        name: 'smp_name'
                     },
                     {
                         data: 'roles',
@@ -217,8 +184,7 @@
             });
 
             $('#search-button').on('click', function() {
-                var smpId = $('#smp_id').val();
-                console.log('Selected SMP ID:', smpId);
+                
                 table.ajax.reload();
             });
 
@@ -322,12 +288,8 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('export_smp_id').value = document.getElementById('smp_id').value;
-            document.getElementById('export_group_id').value = document.getElementById('group_id').value;
+           document.getElementById('export_group_id').value = document.getElementById('group_id').value;
 
-            document.getElementById('smp_id').addEventListener('change', function() {
-                document.getElementById('export_smp_id').value = this.value;
-            });
 
             document.getElementById('group_id').addEventListener('change', function() {
                 document.getElementById('export_group_id').value = this.value;

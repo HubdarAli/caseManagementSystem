@@ -1,7 +1,7 @@
 <div class="content py-3">
     <div class="row fs-sm">
         <div class="col-sm-12 order-sm-1 py-1 text-center text-sm-start">
-            Copyright © {{ date('Y') }}, Sindh Flood Emergency Rehabilitation Project (Govt of Sindh)
+            Copyright © {{ date('Y') }}
         </div>
     </div>
 </div>

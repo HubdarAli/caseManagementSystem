@@ -66,7 +66,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended($this->redirectTo);
+            return redirect()->intended('/dashboard'); // Redirect to the intended page or dashboard
         }
 
         return back()->withErrors([

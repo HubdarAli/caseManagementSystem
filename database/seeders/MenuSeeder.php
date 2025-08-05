@@ -165,5 +165,7 @@ class MenuSeeder extends Seeder
                 }
             }
         }
+
+        //
     }
 }

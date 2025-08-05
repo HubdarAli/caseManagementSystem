@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Livelihood\DistrictController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CourtController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\PermissionController;
 
 Route::get('/', function () {
 
@@ -23,7 +25,8 @@ Auth::routes();
 Route::group(['middleware' => ['auth','menu.component']], function () {
     Route::get('/logout', [LoginController::class, 'logout']);
     Route::resource('groups', GroupController::class);
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
+    Route::resource('permissions', PermissionController::class);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('roles', RoleController::class);
     Route::get('/roles-export', [RoleController::class, 'RoleExport'])->name('roles.export');
     Route::post('/roles-export-save', [RoleController::class, 'RoleExportSave'])->name('roles.export-save');
@@ -39,6 +42,9 @@ Route::group(['middleware' => ['auth','menu.component']], function () {
     Route::resource('district', DistrictController::class);
     Route::get('talukas/{district_id}', [DistrictController::class, 'getTalukasByDistrict']);
     Route::get('district/delete/{id}', [DistrictController::class, 'delete'])->name('district.delete');
+
+    //court routes
+    Route::resource('court', CourtController::class);
 
     //Profile routes
     Route::group(['prefix' => 'Profile'], function () {

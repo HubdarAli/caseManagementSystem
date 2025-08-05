@@ -66,8 +66,12 @@
 
             $('#deleteModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
-                rowIdToDelete = button.data('row-id');
-                $('#deleteForm').attr('action', "{{ route('roles.destroy', '') }}" + "/" + rowIdToDelete);
+                var rowIdToDelete = button.data('row-id');
+
+                // Get the base route from a data attribute or set it via Blade
+                var baseUrl = "{{ route('roles.destroy', ['role' => '__id__']) }}".replace('__id__', rowIdToDelete);
+
+                $('#deleteForm').attr('action', baseUrl);
             });
 
             $('#roles-table').DataTable({

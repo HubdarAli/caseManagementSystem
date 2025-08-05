@@ -85,34 +85,7 @@
                                 <span style="color:red">{{ $errors->first('roles') }}</span>
                             @endif
                         </div>
-                        <div class="col-4" id="smp_data">
-                            <label class="form-label">SMPs <strong style="color:red">*</strong></label>
-                            <select name="smp_id" class="form-control select select2" id="smp_id" disabled>
-                                <option value="">-- Select SMP --</option>
-                                @isset($smps)
-                                    @foreach ($smps as $smp)
-                                        <option value="{{ $smp->id }}">{{ $smp->name }}</option>
-                                    @endforeach
-                                @endisset
-                            </select>
-                            <label id="smp_id-error" class="error" for="smp_id"></label>
-                        </div>
-                        <div class="col-4" id="district_data">
-                            <label class="form-label">District:</label>
-                            {{-- {!! Form::password('password', array('placeholder' => 'Password','class' => 'form-control')) !!} --}}
-                            <select name="district_id" class="form-control select2" id="district_id">
-                                <option value="">-- Select District --</option>
-                                {{-- @foreach ($districts as $district)
-                                    <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                @endforeach --}}
-                            </select>
-                        </div>
-                        <div class="col-4" id="taluka_data">
-                            <label class="form-label">Taluka:</label>
-                            <select name="taluka_id[]" class="form-control select select2" id="taluka_id" multiple>
-                                <option value="">-- Select Taluka --</option>
-                            </select>
-                        </div>
+                        
                         <div class="col-4">
                             <label class="form-label">Password <strong style="color:red">*</strong></label>
                             {{-- {!! Form::password('password', array('placeholder' => 'Password','class' => 'form-control')) !!} --}}
@@ -157,7 +130,7 @@
         @include('includes.form-scripts')
         <script>
             $(document).ready(function() {
-                var logged_in = "{{ Auth::user()->group['group_name'] }}";
+                var logged_in = "{{ Auth::user()->group ? Auth::user()?->group['group_name'] :'' }}";
                 var selected_group = null;
                 var selected_role = null;
                 var selected_smp = null;
@@ -178,9 +151,7 @@
                     }
 
                     if (group_id == '') {
-                        $('#district_data').hide();
-                        $('#taluka_data').hide();
-                        $('#smp_data').hide();
+                        
                         $("#role_id").empty();
                         $("#role_id").append('<option value="">-- Select Role --</option>');
                     } else if (group_id != '') {
@@ -199,259 +170,36 @@
                                 $("#role_id").empty();
                                 $("#role_id").append('<option value="">-- Select Role --</option>');
                                 for (var i = 0; i < data.length; i++) {
-                                    if (logged_in == 'SMP' && data[i].name.toLowerCase() ==
-                                        "{{ strtolower(config('global.smp_roles.1')) }}") {
-                                        continue;
-                                    }
-                                    // if(logged_in == 'SMP' && "{{ strtolower(auth()->user()->getRoleNames()[0]) }}" == "{{ strtolower(config('global.smp_roles.3')) }}")
-                                    // {
-                                    //     if(data[i].name.toLowerCase() == "{{ strtolower(config('global.smp_roles.3')) }}")
+                                    
+                                    // if ("{{ strtolower(auth()->user()->getRoleNames()[0]) }}" ==
+                                    //     data[i].name.toLowerCase()) {
+
+                                    //     if (
+                                    //         logged_in == 'Admin' && data[i].name.toLowerCase() ==
+                                    //         "admin"
+                                    //     ) {
+                                    //         $("#role_id").append('<option value="' + data[i].id +
+                                    //             '">' + data[i].name + '</option>');
+                                    //     } else {
                                     //         continue;
-                                    //     // $("#role_id").append('<option value="'+data[i].id+'">'+data[i].name+'</option>');
+                                    //     }
+
+                                    // } else {
                                     // }
-                                    if ("{{ strtolower(auth()->user()->getRoleNames()[0]) }}" ==
-                                        data[i].name.toLowerCase()) {
-
-                                        if (
-                                            logged_in == 'Admin' && data[i].name.toLowerCase() ==
-                                            "admin"
-                                        ) {
-                                            $("#role_id").append('<option value="' + data[i].id +
-                                                '">' + data[i].name + '</option>');
-                                        } else {
-                                            continue;
-                                        }
-
-                                    } else {
                                         $("#role_id").append('<option value="' + data[i].id + '">' +
                                             data[i].name + '</option>');
-                                    }
                                 }
                             }
                         });
                     }
                 });
                 $('#role_id').change(function() {
-                    $('#smp_id').val('').trigger('change');
                     selected_role = $("#role_id option:selected").text();
-                    if (selected_role.toLowerCase() == "{{ strtolower(config('global.smp_roles.2')) }}" &&
-                        selected_group == 'SMP') {
-                        $('#district_data').show();
-                        $("#district_id").empty();
-                        $("#taluka_id").empty();
-                        $('#smp_id').prop('disabled', false);
-                        $('#smp_id').off('change').on('change', function() {
-                            selected_smp = $("#smp_id option:selected").val();
-                            $.ajax({
-                                type: 'POST',
-                                dataType: 'json',
-                                url: "{{ route('get_district_smp') }}",
-                                data: {
-                                    "smp_id": selected_smp
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                success: function(data) {
-                                    $("#district_id").empty();
-                                    $("#district_id").html(
-                                        '<option value="">-- Select District --</option>'
-                                        );
-                                    $("#district_id").attr('multiple', false);
-                                    $("#district_id").select2();
-                                    $("#district_id").attr('name', 'district_id');
-                                    $("#taluka_id").empty();
-                                    for (var i = 0; i < data.length; i++) {
-                                        let districtIdTemp = data[i].district_id ?? data[i]
-                                            .id;
-
-                                        $("#district_id").append('<option value="' +
-                                            districtIdTemp + '">' + data[i].name +
-                                            '</option>');
-                                    }
-                                    $('#smp_id').select2('destroy');
-                                    $('#smp_id').val(selected_smp).select2();
-                                }
-                            });
-                        });
-                        $('#taluka_data').show();
-                    }
-                    if (selected_role.toLowerCase() != "{{ strtolower(config('global.smp_roles.2')) }}" &&
-                        selected_group == 'SMP') {
-                        $('#smp_id').prop('disabled', false);
-                        $('#district_data').show();
-                        $('#smp_data').show();
-                        $('#smp_id').off('change').on('change', function() {
-
-                            selected_smp = $("#smp_id option:selected").val();
-                            $.ajax({
-                                type: 'POST',
-                                dataType: 'json',
-                                url: "{{ route('get_district_smp') }}",
-                                data: {
-                                    "smp_id": selected_smp
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                success: function(data) {
-                                    $("#district_id").empty();
-                                    $("#district_id").attr('multiple', true);
-                                    $("#district_id").select2();
-                                    $("#district_id").prop('readonly', true);
-                                    $("#district_id").attr('name', 'district_id[]');
-                                    $("#taluka_id").empty();
-                                    for (var i = 0; i < data.length; i++) {
-                                        let districtIdTemp = data[i].district_id ?? data[i]
-                                            .id;
-
-                                        $("#district_id").append('<option value="' +
-                                            districtIdTemp + '" selected>' + data[i]
-                                            .name + '</option>');
-                                    }
-
-                                    $('#smp_id').select2('destroy');
-                                    $('#smp_id').val(selected_smp).select2();
-                                }
-                            });
-                        })
-                        $('#taluka_data').hide();
-                    }
-                    if (selected_role.toLowerCase() == "{{ strtolower(config('global.smp_roles.3')) }}" &&
-                        selected_group == 'SMP') {
-                        $('#district_data').show();
-                        $("#district_id").empty();
-                        $("#taluka_id").empty();
-                        $('#smp_id').prop('disabled', false);
-                        $('#smp_id').off('change').on('change', function() {
-                            selected_smp = $("#smp_id option:selected").val();
-                            $.ajax({
-                                type: 'POST',
-                                dataType: 'json',
-                                url: "{{ route('get_district_smp') }}",
-                                data: {
-                                    "smp_id": selected_smp
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                success: function(data) {
-                                    $("#district_id").empty();
-                                    $("#district_id").html(
-                                        '<option value="">-- Select District --</option>'
-                                        );
-                                    $("#district_id").attr('multiple', false);
-                                    $("#district_id").select2();
-                                    $("#district_id").attr('name', 'district_id');
-                                    $("#taluka_id").empty();
-                                    for (var i = 0; i < data.length; i++) {
-                                        let districtIdTemp = data[i].district_id ?? data[i]
-                                            .id;
-
-                                        $("#district_id").append('<option value="' +
-                                            districtIdTemp + '">' + data[i].name +
-                                            '</option>');
-                                    }
-
-                                    $('#smp_id').select2('destroy');
-                                    $('#smp_id').val(selected_smp).select2();
-                                }
-                            });
-                        });
-                        $('#taluka_data').hide();
-                    }
-
-                    if (selected_role.toLowerCase() == "{{ strtolower(config('global.smp_roles.4')) }}" &&
-                        selected_group == 'SMP') {
-                        $('#taluka_data').show();
-                        $('#district_data').show();
-                        $('#smp_id').prop('disabled', false);
-                        $('#smp_id').off('change').on('change', function() {
-                            selected_smp = $("#smp_id option:selected").val();
-
-                            $.ajax({
-                                type: 'POST',
-                                dataType: 'json',
-                                url: "{{ route('get_district_smp') }}",
-                                data: {
-                                    "smp_id": selected_smp
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                success: function(data) {
-                                    $("#district_id").empty();
-                                    $("#district_id").html(
-                                        '<option value="">-- Select District --</option>'
-                                        );
-                                    $("#district_id").attr('multiple', false);
-                                    $("#district_id").select2();
-                                    $("#district_id").attr('name', 'district_id');
-                                    $("#taluka_id").empty();
-
-                                    for (var i = 0; i < data.length; i++) {
-                                        let districtIdTemp = data[i].district_id ?? data[i]
-                                            .id;
-
-                                        $("#district_id").append('<option value="' +
-                                            districtIdTemp + '">' + data[i].name +
-                                            '</option>');
-                                    }
-
-                                    $('#smp_id').select2('destroy');
-                                    $('#smp_id').val(selected_smp).select2();
-                                }
-                            });
-                        });
-                    }
-
+                    
                     if (selected_role == '-- Select Role --') {
                         $('#smp_id').val('').trigger('change');
                         $("#smp_id").prop('disabled', true);
                         $('#district_data').hide();
-                    }
-                });
-                $("#district_id").change(function() {
-                    var district_id = $(this).val();
-                    if (district_id == '') {
-                        $("#taluka_id").empty();
-                    } else if (district_id != '') {
-                        $("#taluka_id").select2('destroy');
-                        $("#taluka_id").empty();
-
-                        if (selected_role.toLowerCase() == "{{ strtolower(config('global.smp_roles.4')) }}" &&
-                            selected_group == 'SMP') {
-                            $("#taluka_id").append('<option value="">Select Taluka</option>');
-                            $("#taluka_id").attr('multiple', false);
-                            $("#taluka_id").attr('name', 'taluka_id');
-                        } else {
-                            $("#taluka_id").attr('multiple', true);
-                            $("#taluka_id").attr('name', 'taluka_id[]');
-                        }
-
-                        $("#taluka_id").select2();
-                        // $("#taluka_id").empty();
-
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            // url: '/get_talukas',
-                            url: "{{ route('get_taluka_smp') }}",
-                            data: {
-                                "district_id": district_id,
-                                "smp_id": selected_smp
-                            },
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            success: function(data) {
-                                // $("#taluka_id").empty();
-                                for (var i = 0; i < data.length; i++) {
-                                    $("#taluka_id").append('<option value="' + data[i].id + '">' +
-                                        data[i].name + '</option>');
-                                }
-                            }
-                        });
                     }
                 });
 
@@ -484,9 +232,6 @@
                             required: true,
                         },
                         roles: {
-                            required: true,
-                        },
-                        smp_id: {
                             required: true,
                         },
                         password: {

@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>
     @section('title')
-        :: Sindh Flood Emergency Rehabilitation Project ::
+        :: Case Management System ::
     @show
 </title>
 
@@ -20,7 +20,7 @@
 </script>
 <!-- Icons -->
 <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-<link rel="shortcut icon" href="{{ asset('assets/media/favicons/favicon.ico') }}">
+<link rel="shortcut icon" href="{{-- asset('assets/media/favicons/favicon.ico') --}}">
 <!-- END Icons -->
 
 <!-- Stylesheets -->

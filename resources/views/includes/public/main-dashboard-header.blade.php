@@ -1,7 +1,7 @@
 <header id="page-header">
     <div class="content-header">
         <div class="d-flex align-items-center">
-            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{ route('home') }}">
+            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{ route('dashboard') }}">
                  <img src="/assets/media/photos/inner-logo.png" class="img-fluid" width="180" alt="" />
             </a>
         </div>

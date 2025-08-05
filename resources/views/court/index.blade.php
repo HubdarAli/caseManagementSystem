@@ -10,13 +10,13 @@
             class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center text-center text-md-start">
             <div class="flex-grow-1 mb-1 mb-md-0">
                 <h1 class="h3 fw-bold mb-1">
-                    Manage District
+                    Manage Court
                 </h1>
 
             </div>
-            @can('district-create')
+            @can('court-create')
                 <div class="mt-3 mt-md-0 ms-md-3 space-x-1">
-                    <a class="btn btn-sm btn-alt-success me-1 mb-3" href="{{ route('district.create') }}">
+                    <a class="btn btn-sm btn-alt-success me-1 mb-3" href="{{ route('court.create') }}">
                         <i class="fa fa-fw fa-plus me-1"></i>
                         Add
                     </a>
@@ -32,7 +32,7 @@
 
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Manage District</h3>
+                <h3 class="block-title">Manage court</h3>
             </div>
             <div class="block-content block-content-full">
 
@@ -40,6 +40,7 @@
                     <thead>
                         <tr>
                             <th class="text-center">No</th>
+                            <th>Court Name</th>
                             <th>District Name</th>
                             <th>Action</th>
                         </tr>
@@ -67,7 +68,7 @@
                 var rowIdToDelete = button.data('row-id');
 
                 // Get the base route from a data attribute or set it via Blade
-                var baseUrl = "{{ route('district.index') }}"; // this returns /district
+                var baseUrl = "{{ route('court.index') }}"; // this returns /court
 
                 $('#deleteForm').attr('action', baseUrl + '/' + rowIdToDelete);
             });
@@ -75,7 +76,7 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('district.index') }}",
+                ajax: "{{ route('court.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
@@ -83,6 +84,10 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'district_id',
+                        name: 'district_id'
                     },
                     {
                         data: 'action',
