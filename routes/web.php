@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth','menu.component']], function () {
     //courts-cases routes
     Route::resource('courts-cases', CourtCaseController::class);
 
+    Route::get('/court-cases/pdf', [CourtCaseController::class, 'generatePdf'])->name('court-cases.pdf');
+
     //Profile routes
     Route::group(['prefix' => 'Profile'], function () {
         Route::resource('/profile', ProfileController::class);

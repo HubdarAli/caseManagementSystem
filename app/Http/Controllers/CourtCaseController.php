@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CourtCaseController extends Controller
 {
@@ -90,7 +91,7 @@ class CourtCaseController extends Controller
                             </div>';
                         return $actions;
                     })
-                    ->rawColumns(['action','status'])
+                    ->rawColumns(['action', 'status'])
                     ->make(true);
             }
         } catch (Exception $e) {
@@ -186,4 +187,20 @@ class CourtCaseController extends Controller
 
         return redirect()->route('courts-cases.index')->with('success', 'Court Case deleted successfully.');
     }
+
+    public function generatePdf()
+    {
+        $courtCases = CourtCase::with(['court', 'district'])->get();
+
+        // Grouping by region (based on court name or region column)
+        $groupedCases = $courtCases->groupBy(function ($case) {
+            return strtoupper($case->court->district->name ?? 'Other'); // or a `region` column
+        });
+
+        return View('court_cases.pdf', compact('groupedCases'));
+        $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases'))->setPaper('a4');
+
+        return $pdf->download('court-cases.pdf');
+    }
+
 }
