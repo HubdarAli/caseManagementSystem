@@ -96,6 +96,7 @@ class RolePermissionSeeder extends Seeder
                     'court-case-create',
                     'court-case-edit',
                     'court-case-delete',
+                    'court-case-export',
                 ],
             ],
         ];

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('courts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->enum('type', ['Civil', 'Criminal', 'Family', 'Labor', 'Other']);
+            $table->enum('type', ['Civil', 'Criminal', 'Family', 'Labor', 'Other'])->defult('Civil');
             $table->uuid('district_id');
             $table->uuid('created_by')->nullable();
             $table->uuid('updated_by')->nullable();

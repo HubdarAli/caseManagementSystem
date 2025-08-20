@@ -120,6 +120,9 @@ class CourtController extends Controller
             $court = new Court();
             $court->name = $request->name;
             $court->district_id = $request->district_id;
+            // $court->type = $request->type;
+            $court->created_by = Auth::id();
+
             $court->save();
 
             return redirect()->route('court.index')->with('success', 'Court created successfully.');
@@ -168,6 +171,8 @@ class CourtController extends Controller
             $court = Court::findOrFail($id);
             $court->name = $request->name;
             $court->district_id = $request->district_id;
+            // $court->type = $request->type;
+            $court->updated_by = Auth::id();
             $court->save();
 
             return redirect()->route('court.index')->with('success', 'Court updated successfully.');

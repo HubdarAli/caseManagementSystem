@@ -15,12 +15,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->string('case_number')->unique();
-            $table->enum('case_type', ['Civil', 'Criminal', 'Family', 'Labor', 'Other']);
+            $table->string('applicant');
+            $table->string('respondent');
+            $table->enum('case_type', ['Civil Suit','Civil Appeal','Suit', 'Criminal', 'Family', 'Labor','Arbitration','Summary Suit','Special Case','PPC', 'Other']);
             $table->enum('status', ['Open', 'In Progress', 'Closed'])->default('Open');
             $table->date('hearing_date')->nullable();
             $table->text('notes')->nullable();
 
-            $table->uuid('user_id');        // Advocate
+            $table->uuid('user_id')->nullable();        // Advocate
             $table->uuid('district_id');
             $table->uuid('court_id');
             $table->uuid('created_by')->nullable();

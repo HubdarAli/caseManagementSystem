@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DistrictSeeder::class,
             CourtSeeder::class,
+            CourtCaseSeeder::class
         ]);
     }
 }

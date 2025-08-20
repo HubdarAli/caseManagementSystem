@@ -102,13 +102,13 @@ class MenuSeeder extends Seeder
             ],
             // end meta data
 
-            //dashboard menu
+            //Courts Case menu
             [
                 'name'            => 'Manage Courts Case',
                 'permission_type' => 'menu',
                 'slug'            => Str::slug('Manage Courts Case'),
                 'permission_link' => '/courts-cases',
-                'icon_name'       => 'si si-speedometer',
+                'icon_name'       => 'fa fa-clipboard-list',
                 'is_web'          => 1,
             ],
         ];

@@ -53,6 +53,16 @@
                             <input type="text" class="form-control" id="title" name="title"
                                    placeholder="Enter Case Title" value="{{ old('title') }}">
                         </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="applicant">Applicant <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="applicant" name="applicant"
+                                   placeholder="Enter Applicant" value="{{ old('applicant') }}">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="respondent">Respondent <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="respondent" name="respondent"
+                                   placeholder="Enter Respondent" value="{{ old('respondent') }}">
+                        </div>
 
                         <div class="col-md-6 mt-3">
                             <label class="form-label" for="case_type">Case Type <span class="text-danger">*</span></label>
@@ -60,10 +70,16 @@
                                    placeholder="Civil/Criminal etc." value="{{ old('case_type') }}"> --}}
                             <select class="form-control" id="case_type" name="case_type">
                                 <option value="">-- Select Case Type --</option>
-                                <option value="Civil" {{ old('case_type') == 'Civil' ? 'selected' : '' }}>Civil</option>
+                                <option value="Civil Suit" {{ old('case_type') == 'Civil Suit' ? 'selected' : '' }}>Civil Suit</option>
+                                <option value="Civil Appeal" {{ old('case_type') == 'Civil Appeal' ? 'selected' : '' }}>Civil Appeal</option>
+                                <option value="Summary Suit" {{ old('case_type') == 'Summary Suit' ? 'selected' : '' }}>Summary Suit</option>
+                                <option value="Suit" {{ old('case_type') == 'Suit' ? 'selected' : '' }}>Suit</option>
                                 <option value="Criminal" {{ old('case_type') == 'Criminal' ? 'selected' : '' }}>Criminal</option>
                                 <option value="Family" {{ old('case_type') == 'Family' ? 'selected' : '' }}>Family</option>
                                 <option value="Labor" {{ old('case_type') == 'Labor' ? 'selected' : '' }}>Labor</option>
+                                <option value="Special Case" {{ old('case_type') == 'Special Case' ? 'selected' : '' }}>Special Case</option>
+                                <option value="Arbitration" {{ old('case_type') == 'Arbitration' ? 'selected' : '' }}>Arbitration</option>
+                                <option value="PPC" {{ old('case_type') == 'PPC' ? 'selected' : '' }}>PPC</option>
                                 <option value="Other" {{ old('case_type') == 'Other' ? 'selected' : '' }}>Other</option>
                             </select>
                         </div>
@@ -74,7 +90,7 @@
                                 <option value="">-- Select Status --</option>
                                 <option value="Open" {{ old('status') == 'Open' ? 'selected' : '' }}>Open</option>
                                 <option value="Closed" {{ old('status') == 'Closed' ? 'selected' : '' }}>Closed</option>
-                                <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                             </select>
                         </div>
 
@@ -147,6 +163,8 @@
                 rules: {
                     case_number: { required: true },
                     title: { required: true, minlength: 3 },
+                    applicant: { required: true, minlength: 3 },
+                    respondent: { required: true, minlength: 3 },
                     case_type: { required: true },
                     court_id: { required: true },
                     district_id: { required: true },
@@ -154,6 +172,8 @@
                 messages: {
                     case_number: { required: 'Please enter the case number.' },
                     title: { required: 'Please enter the case title.' },
+                    applicant: { required: 'Please enter the Applicant.' },
+                    respondent: { required: 'Please enter the Respondent.' },
                     case_type: { required: 'Please enter the case type.' },
                     court_id: { required: 'Please select a court.' },
                     district_id: { required: 'Please select a district.' },

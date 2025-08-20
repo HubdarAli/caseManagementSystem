@@ -132,22 +132,24 @@ class CourtCaseController extends Controller
 
         CourtCase::create($validated);
 
-        return redirect()->route('courts-cases.index')->with('success', 'Court Case created successfully.');
+        return redirect()->route('courts-cases.index')->with('alert-success', 'Court Case created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(CourtCase $court_case)
+    public function show($court_case)
     {
+        $court_case = CourtCase::findOrFail($court_case);
         return view('court_cases.show', compact('court_case'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(CourtCase $court_case)
+    public function edit($court_case)
     {
+        $court_case = CourtCase::findOrFail($court_case);
         $districts = District::all();
         $courts = Court::all();
         return view('court_cases.edit', compact('court_case', 'districts', 'courts'));
@@ -156,8 +158,9 @@ class CourtCaseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, CourtCase $court_case)
+    public function update(Request $request, $court_case)
     {
+        $court_case = CourtCase::findOrFail($court_case);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'case_number' => 'required|string|max:255',
@@ -169,11 +172,16 @@ class CourtCaseController extends Controller
             'court_id' => 'required|exists:courts,id',
         ]);
 
-        $validated['updated_by'] = Auth::id();
+        try {
+            $validated['updated_by'] = Auth::id();
 
-        $court_case->update($validated);
+            $court_case->update($validated);
+        } catch (Exception $e) {
+            // dd($e);
+            return back()->with('alert-danger', Env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong');
+        }
 
-        return redirect()->route('courts-cases.index')->with('success', 'Court Case updated successfully.');
+        return redirect()->route('courts-cases.index')->with('alert-success', 'Court Case updated successfully.');
     }
 
     /**
@@ -185,22 +193,29 @@ class CourtCaseController extends Controller
         $court_case->save();
         $court_case->delete();
 
-        return redirect()->route('courts-cases.index')->with('success', 'Court Case deleted successfully.');
+        return redirect()->route('courts-cases.index')->with('alert-success', 'Court Case deleted successfully.');
     }
 
-    public function generatePdf()
+    public function generatePdf(Request $request)
     {
-        $courtCases = CourtCase::with(['court', 'district'])->get();
+        // $courtCases = CourtCase::with(['court', 'district'])->get();
+
+        $from = $request->input('from_date');
+        $to   = $request->input('to_date');
+
+        $courtCases = CourtCase::with(['court', 'district'])
+            ->when($from, fn($q) => $q->whereDate('hearing_date', '>=', $from))
+            ->when($to, fn($q) => $q->whereDate('hearing_date', '<=', $to))
+            ->get();
 
         // Grouping by region (based on court name or region column)
         $groupedCases = $courtCases->groupBy(function ($case) {
             return strtoupper($case->court->district->name ?? 'Other'); // or a `region` column
         });
 
-        return View('court_cases.pdf', compact('groupedCases'));
-        $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases'))->setPaper('a4');
+        // return View('court_cases.pdf', compact('groupedCases','from','to'));
+        $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases','from','to'))->setPaper('a4');
 
         return $pdf->download('court-cases.pdf');
     }
-
 }

@@ -1,82 +1,73 @@
 @extends('layouts.default')
+
 @section('content')
-    @include('partials.alerts')
     @push('style')
         <style>
             label.error {
                 color: red;
             }
-
-            input.error {
+            input.error, select.error {
                 border-color: red;
-            }
-
-            select.error {
-                border-color: red;
-            }
-
-            input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
             }
         </style>
     @endpush
+
+    @include('partials.alerts')
+
     <div class="content">
-        <div
-            class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center py-2 text-center text-md-start">
+        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center py-2 text-center text-md-start">
             <div class="flex-grow-1 mb-1 mb-md-0">
                 <h1 class="h3 fw-bold mb-1">
-                    Edit District
+                    Court
                 </h1>
             </div>
             <div class="mt-3 mt-md-0 ms-md-3 space-x-1">
-                <a href="{{ route('district.index') }}" class="btn btn-sm btn-dark me-1 mb-3"><i
-                        class="fa fa-fw fa-angle-left
-                    me-1"></i>Back</a>
+                <a href="{{ route('court.index') }}" class="btn btn-sm btn-dark me-1 mb-3">
+                    <i class="fa fa-fw fa-angle-left me-1"></i>
+                    Back
+                </a>
             </div>
         </div>
+
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Edit District</h3>
+                <h3 class="block-title">Edit Court</h3>
             </div>
             <div class="block-content block-content-full">
-                <form class=" g-3 align-items-center" id="edit-form" action="{{ route('district.update', $district->id) }}"
-                    method="POST">
-                    @method('PUT')
+                <form class="g-3 align-items-center" id="edit-form" action="{{ route('court.update', $court->id) }}" method="POST">
                     @csrf
+                    @method('PUT')
                     <div class="row p-1">
                         <div class="col-6 mt-3">
-                            <label class="form-label" for="example-if-name">District Name</label><span
-                                class="text-danger">*</span>
-                            <input type="hidden" name="id" value="{{ $district->id }}">
-                            <input type="text" class="form-control" id="" value="{{ $district->name }}"
-                                name="name" placeholder="Name">
-                        </div>
-                        <div class="col-6 mt-3">
-                            <label class="form-label">Code</label><span class="text-danger">*</span>
-                            <input type="number" class="form-control" id="code" disabled
-                                oninput="this.value = this.value.slice(0, 2);" value="{{ $district->code }}"
-                                placeholder="Enter Code">
-                        </div>
-                        <div class="col-6 mt-3">
-                            <label class="form-label" for="latitude">Latitude</label>
-                            <input type="text" class="form-control" value="{{ $district->latitude }}"
-                                name="latitude" placeholder="Latitude" oninput="validateCoordinates(this)">
-                        </div>
-                        <div class="col-6 mt-3">
-                            <label class="form-label" for="longitude">Longitude</label>
-                            <input type="text" class="form-control" value="{{ $district->longitude }}"
-                                name="longitude" placeholder="Longitude" oninput="validateCoordinates(this)">
+                            <label class="form-label" for="name">Court Name</label><span class="text-danger">*</span>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="Enter Court Name" value="{{ old('name', $court->name) }}">
                         </div>
 
-                        <!-- <div class="col-6 mt-3">
-                  <label class="form-label">Short Code</label><span class="text-danger">*</span>
-                  <input type="text" class="form-control" id="" value="{{ $district->formatted_shortcode }}" name="short_code" placeholder="Enter Short Code">
-                </div> -->
+                        <div class="col-6 mt-3">
+                            <label class="form-label" for="district_id">Select District</label><span class="text-danger">*</span>
+                            <select class="form-control" id="district_id" name="district_id">
+                                <option value="">-- Select District --</option>
+                                @foreach($districts as $district)
+                                    <option value="{{ $district->id }}" {{ old('district_id', $court->district_id) == $district->id ? 'selected' : '' }}>
+                                        {{ $district->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- <div class="col-6 mt-3">
+                            <label class="form-label" for="type">Court Type</label><span class="text-danger">*</span>
+                            <select class="form-control" id="type" name="type">
+                                <option value="">-- Select Court Type --</option>
+                                @foreach(['Civil Suit','Civil Appeal','Suit','Criminal','Family','Labor','Arbitration','Summary Suit','Special Case','PPC','Other'] as $type)
+                                    <option value="{{ $type }}" {{ old('type', $court->type) == $type ? 'selected' : '' }}>
+                                        {{ $type }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div> --}}
                     </div>
-
-
 
                     <div class="row mt-2 text-end">
                         <div class="col-12">
@@ -87,22 +78,18 @@
             </div>
         </div>
     </div>
-    </div>
 @endsection
 
 @section('footer_scripts')
     <script src="{{ asset('assets/js/lib/jquery-form-validation.min.js') }}"></script>
-
+    <script src="{{ asset('assets/js/lib/jquery-inputmasking.js') }}"></script>
     <script>
-        function validateCoordinates(input) {
-            input.value = input.value.replace(/[^0-9.,\-']/g,'');
-          }
-          
         $(document).ready(function() {
-
             $.validator.addMethod("alphaOnly", function(value, element) {
-                return /^[a-zA-Z\s]+$/.test(value);
+                return /^[A-Za-z0-9@ ]+$/.test(value);
             }, "Please enter alphabetic characters only.");
+
+            $(":input").inputmask();
 
             $('#edit-form').validate({
                 rules: {
@@ -110,44 +97,28 @@
                         required: true,
                         alphaOnly: true,
                         minlength: 3,
-                        maxlength: 24
+                        maxlength: 50,
                     },
-                    // short_code: {
-                    //     required: true,
-                    //     alphaOnly: true,
-                    // },
-                    code: {
+                    district_id: {
                         required: true,
-                        digits: true,
-                        maxlength: 2,
-                        minlength: 2,
                     },
+                    // type: {
+                    //     required: true,
+                    // }
                 },
                 messages: {
                     name: {
-                        required: 'Please Enter District Name.',
+                        required: 'Please Enter Court Name.',
                         alphaOnly: 'Please Enter Alphabetic Characters Only',
                         minlength: 'Please Enter Minimum 3 Characters',
                     },
-                    // short_code: {
-                    //     required: 'Please Enter District Short Code.',
-                    //     alphaOnly: 'Please Enter Alphabetic Characters Only'
-                    // },
-                    // code: {
-                    //     required: 'Please Enter District Code.',
-                    //     digits: 'Please Enter Valid Numeric Code.',
-                    //     maxlength: 'Please Enter Maximum 2 Digits'
-                    //     minlength: 'Please Enter Maximum 2 Digits'
-                    // },
+                    district_id: {
+                        required: 'Please Select District.',
+                    },
+                    type: {
+                        required: 'Please Select Court Type.',
+                    }
                 },
-
-                // errorElement: "span",
-
-                // errorPlacement: function(error, element) {
-                //     error.addClass("text-danger");
-                //     error.insertAfter(element);
-                // },
-
             });
         });
     </script>

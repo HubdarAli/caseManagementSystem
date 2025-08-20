@@ -15,6 +15,8 @@ class CourtCase extends Model
     protected $fillable = [
         'title',
         'case_number',
+        'applicant',
+        'respondent',
         'case_type',
         'status',
         'hearing_date',
@@ -47,6 +49,4 @@ class CourtCase extends Model
         return $this->hasMany(CaseFile::class);
     }
 
-
-    
 }
