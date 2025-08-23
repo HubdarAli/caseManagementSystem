@@ -133,6 +133,7 @@
             var table = $('#permissions-table').DataTable({
                 processing: true,
                 serverSide: true,
+scrollX: true,
                 ajax: {
                     url: "{{ route('users.index') }}",
                     data: function(d) {

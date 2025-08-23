@@ -108,6 +108,7 @@
             $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
+scrollX: true,
                 ajax: "{{ route('courts-cases.index') }}",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },

@@ -77,6 +77,7 @@
             $('#roles-table').DataTable({
                 processing: true,
                 serverSide: true,
+scrollX: true,
                 ajax: "{{ route('roles.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',
