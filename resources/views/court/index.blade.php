@@ -76,7 +76,6 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                scrollX: true,
                 ajax: "{{ route('court.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',

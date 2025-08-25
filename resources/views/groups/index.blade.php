@@ -77,7 +77,6 @@
             $('#groups-table').DataTable({
                 processing: true,
                 serverSide: true,
-scrollX: true,
                 ajax: "{{ route('groups.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',

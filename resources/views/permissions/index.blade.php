@@ -70,7 +70,6 @@
             $('#permissions-table').DataTable({
                 processing: true,
                 serverSide: true,
-scrollX: true,
                 ajax: "{{ route('permissions.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',
