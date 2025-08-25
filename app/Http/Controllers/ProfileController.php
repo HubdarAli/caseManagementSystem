@@ -53,7 +53,7 @@ class ProfileController extends Controller
 
         $profile = User::find(Auth::user()->id);
         $user = Auth::user();
-        if (auth()->user()->group_name == 'admin') {
+        if ($profile->group->group_name == 'admin') {
             $groups = Group::select('id', 'group_name')->get();
         } else {
             $groups = Group::select('id', 'group_name')->where('id', '=', auth()->user()->group_id)->get();
