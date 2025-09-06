@@ -98,6 +98,9 @@
                             <label class="form-label" for="hearing_date">Next Hearing Date</label>
                             <input type="date" class="form-control" id="hearing_date" name="hearing_date"
                                    value="{{ old('hearing_date') }}">
+                            <span class="clear_date small">
+                                <a href="">Clear Date</a>
+                            </span>
                         </div>
 
                         <div class="col-md-6 mt-3">
@@ -178,6 +181,11 @@
                     court_id: { required: 'Please select a court.' },
                     district_id: { required: 'Please select a district.' },
                 }
+            });
+
+            $('.clear_date').click(function(e) {
+                e.preventDefault();
+                $(this).parent('div').find('input.form-control').val('');
             });
         });
     </script>
