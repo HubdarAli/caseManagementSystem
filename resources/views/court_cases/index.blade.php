@@ -122,15 +122,15 @@
                     { 
                         data: 'hearing_date', 
                         name: 'hearing_date',
-                        render: function(data, type, row) {
-                            if (!data) return '<span class="badge bg-danger">Not Set</span>';;
-                            // Format date as DD-MM-YYYY
-                            var dateObj = new Date(data);
-                            var day = String(dateObj.getDate()).padStart(2, '0');
-                            var month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                            var year = dateObj.getFullYear();
-                            return day + '-' + month + '-' + year;
-                        }
+                        // render: function(data, type, row) {
+                        //     if (!data) return '<span class="badge bg-danger">Not Set</span>';
+                        //     // Format date as DD-MM-YYYY
+                        //     var dateObj = new Date(data);
+                        //     var day = String(dateObj.getDate()).padStart(2, '0');
+                        //     var month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        //     var year = dateObj.getFullYear();
+                        //     return day + '-' + month + '-' + year;
+                        // }
                     },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }

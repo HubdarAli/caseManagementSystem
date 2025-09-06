@@ -29,7 +29,14 @@ class CourtCaseController extends Controller
                     ->editColumn('district_id', function ($cases) {
                         return $cases->district->name ?? 'N/A';
                     })
+                    ->editColumn('hearing_date', function ($cases) {
+                        if (empty($cases->hearing_date) || \Carbon\Carbon::parse($cases->hearing_date)->lt(now())) {
+                            return '<span class="badge bg-danger">Not Set</span>';
+                        }
+                        return \Carbon\Carbon::parse($cases->hearing_date)->format('d M, Y');
+                    })
                     ->editColumn('status', function ($cases) {
+                        
                         //status
                         $statusClasses = [
                             'Open' => 'badge bg-warning',
@@ -91,7 +98,7 @@ class CourtCaseController extends Controller
                             </div>';
                         return $actions;
                     })
-                    ->rawColumns(['action', 'status'])
+                    ->rawColumns(['action', 'status','hearing_date'])
                     ->make(true);
             }
         } catch (Exception $e) {
