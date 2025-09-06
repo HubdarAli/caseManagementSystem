@@ -14,18 +14,20 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use Carbon\Carbon;
 
+use App\Http\Controllers\GoogleCalendarController;
+
 Route::get('/', function () {
 
 
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('courts-cases.index');
     }
     return view('auth.login');
 });
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth','menu.component']], function () {
+Route::group(['middleware' => ['auth', 'menu.component']], function () {
     Route::get('/logout', [LoginController::class, 'logout']);
     Route::resource('groups', GroupController::class);
     Route::resource('permissions', PermissionController::class);
@@ -48,7 +50,7 @@ Route::group(['middleware' => ['auth','menu.component']], function () {
 
     //court routes
     Route::resource('court', CourtController::class);
-    
+
     //courts-cases routes
     Route::get('/courts-cases/pdf', [CourtCaseController::class, 'generatePdf'])->name('courts-cases.pdf');
     Route::resource('courts-cases', CourtCaseController::class);
@@ -61,4 +63,9 @@ Route::group(['middleware' => ['auth','menu.component']], function () {
         Route::get('/update_user_password/{id}', [ProfileController::class, 'update_user_password'])->name('Profile.update_user_password');
         Route::post('/ChangePassword', [ProfileController::class, 'UpdatePassword'])->name('UpdatePassword');
     });
+
+
+    // Route::get('google/redirect', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.redirect');
+    // Route::get('google/callback', [GoogleCalendarController::class, 'handleCallback']);
+    // Route::get('google/events', [GoogleCalendarController::class, 'getEvents'])->name('google.events');
 });
