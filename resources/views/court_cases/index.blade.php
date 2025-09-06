@@ -70,13 +70,13 @@
                         </div>
                         <div class="modal-body p-4">
                             <div class="mb-3">
-                                <label for="from_date" class="form-label">From Date</label>
+                                <label for="from_date" class="form-label">Date</label>
                                 <input type="date" name="from_date" id="from_date" class="form-control" required>
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="to_date" class="form-label">To Date</label>
                                 <input type="date" name="to_date" id="to_date" class="form-control" required>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-alt-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -108,7 +108,7 @@
             $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-scrollX: true,
+                scrollX: true,
                 ajax: "{{ route('courts-cases.index') }}",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
@@ -119,7 +119,19 @@ scrollX: true,
                     { data: 'case_type', name: 'case_type' },
                     { data: 'court.name', name: 'court.name' },
                     { data: 'district.name', name: 'district.name' },
-                    { data: 'notes', name: 'notes' },
+                    { 
+                        data: 'hearing_date', 
+                        name: 'hearing_date',
+                        render: function(data, type, row) {
+                            if (!data) return '<span class="badge bg-danger">Not Set</span>';;
+                            // Format date as DD-MM-YYYY
+                            var dateObj = new Date(data);
+                            var day = String(dateObj.getDate()).padStart(2, '0');
+                            var month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            var year = dateObj.getFullYear();
+                            return day + '-' + month + '-' + year;
+                        }
+                    },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]

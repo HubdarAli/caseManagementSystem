@@ -32,8 +32,8 @@
     {{-- <h1 style="text-align:center;">Kayani & Masood<br>Advocates | Barristers | Legal Consultants</h1> --}}
     <h3> Daily Cause List, 
         {{ \Carbon\Carbon::parse($from)->format('l, d F Y') }}
-        -
-        {{ \Carbon\Carbon::parse($to)->format('l, d F Y') }}
+        {{-- -
+        {{ \Carbon\Carbon::parse($to)->format('l, d F Y') }} --}}
      </h3>
     @foreach($groupedCases as $region => $cases)
         <h2>{{ strtoupper($region) }}</h2>

@@ -204,7 +204,7 @@ class CourtCaseController extends Controller
         $to   = $request->input('to_date');
 
         $courtCases = CourtCase::with(['court', 'district'])
-            ->when($from, fn($q) => $q->whereDate('hearing_date', '>=', $from))
+            ->when($from, fn($q) => $q->whereDate('hearing_date', '=', $from))
             ->when($to, fn($q) => $q->whereDate('hearing_date', '<=', $to))
             ->get();
 
