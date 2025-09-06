@@ -18,19 +18,19 @@
 
 
         <!-- Sidebar -->
-        @if (!request()->has('no_sidebar'))
+        {{-- @if (!request()->has('no_sidebar'))
             <nav id="sidebar" aria-label="Main Navigation">
                 @include('includes.sidebar')
             </nav>
-        @endif
+        @endif --}}
         <!-- END Sidebar -->
 
         <!-- Header -->
         <header id="page-header">
             @include('includes.header')
+            @include('includes.navbar')
         </header>
         <!-- END Header -->
-
         <!-- Main Container -->
         <main id="main-container">
             @yield('content')
