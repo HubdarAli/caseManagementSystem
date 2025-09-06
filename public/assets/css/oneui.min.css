@@ -19181,7 +19181,7 @@ small {
     .content {
         width: 100%;
         margin: 0 auto;
-        padding: 1.875rem 1.875rem 1px;
+        /* padding: 1.875rem 1.875rem 1px; */
         overflow-x: visible
     }
 
