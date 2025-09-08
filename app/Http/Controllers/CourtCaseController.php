@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CourtCaseImport;
 
 class CourtCaseController extends Controller
 {
@@ -224,5 +226,24 @@ class CourtCaseController extends Controller
         $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases','from','to'))->setPaper('a4');
 
         return $pdf->download('court-cases.pdf');
+    }
+
+    public function importForm()
+    {
+        return view('court_cases.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new CourtCaseImport, $request->file('file'));
+            return redirect()->route('courts-cases.index')->with('alert-success', 'Court Cases imported successfully.');
+        } catch (Exception $e) {
+            return back()->with('alert-danger', env('APP_ENV') == 'local' ? $e->getMessage() : 'Import failed');
+        }
     }
 }

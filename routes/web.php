@@ -53,6 +53,8 @@ Route::group(['middleware' => ['auth', 'menu.component']], function () {
 
     //courts-cases routes
     Route::get('/courts-cases/pdf', [CourtCaseController::class, 'generatePdf'])->name('courts-cases.pdf');
+    Route::get('courts-cases/import', [CourtCaseController::class, 'importForm'])->name('courts-cases.import.form');
+    Route::post('courts-cases/import', [CourtCaseController::class, 'import'])->name('courts-cases.import');
     Route::resource('courts-cases', CourtCaseController::class);
 
 
