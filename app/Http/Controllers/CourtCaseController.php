@@ -29,7 +29,10 @@ class CourtCaseController extends Controller
                 return DataTables::of($cases)
                     ->addIndexColumn()
                     ->editColumn('district_id', function ($cases) {
-                        return $cases->district->name ?? 'N/A';
+                        return $cases->district?->name ?? 'N/A';
+                    })
+                    ->editColumn('court_id', function ($cases) {
+                        return $cases->court?->name ?? 'N/A';
                     })
                     ->editColumn('hearing_date', function ($cases) {
                         if (empty($cases->hearing_date) || \Carbon\Carbon::parse($cases->hearing_date)->lt(now())) {
@@ -236,7 +239,7 @@ class CourtCaseController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls',
+            'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
         try {

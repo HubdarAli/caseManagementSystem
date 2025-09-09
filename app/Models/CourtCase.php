@@ -21,12 +21,13 @@ class CourtCase extends Model
         'status',
         'hearing_date',
         'notes',
+        'is_migrated',
         'user_id',
         'district_id',
         'court_id',
         'created_by',
         'updated_by',
-        'deleted_by', 
+        'deleted_by',
     ];
 
     public function user(): BelongsTo

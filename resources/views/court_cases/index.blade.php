@@ -117,8 +117,8 @@
                     { data: 'applicant', name: 'applicant' },
                     { data: 'respondent', name: 'respondent' },
                     { data: 'case_type', name: 'case_type' },
-                    { data: 'court.name', name: 'court.name' },
-                    { data: 'district.name', name: 'district.name' },
+                    { data: 'court_id', name: 'court_id' },
+                    { data: 'district_id', name: 'district_id' },
                     { 
                         data: 'hearing_date', 
                         name: 'hearing_date',

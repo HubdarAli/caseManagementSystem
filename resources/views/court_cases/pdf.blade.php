@@ -2,51 +2,78 @@
 <html>
 <head>
     <style>
-        body { font-family: DejaVu Sans; font-size: 11px; }
+        body { font-family: Times New Roman; font-size: 12px; font-weight: 200; margin: 0px; padding-left: 20px; padding-right: 20px; }
         h2 {
-            border: 1px solid #000;
-            margin-top: 2px;
-            padding: 10px;
+            border: 1px ridge rgb(0, 0, 0);
+            margin: 0px;
+            padding: 0px;
             text-align: center;
+            background-color: #eaeaea;
+            font-size: 16px;
         }
 
         h3 {
             text-decoration: underline;
-            margin-top: 5px;
-            padding: 10px;
+            margin: 0px;
+            margin-bottom: 1px;
+            /* padding: 5px; */
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        h4 {
+            /* text-decoration: underline; */
+            margin: 0px;
+            /* padding: 5px; */
             text-align: center;
         }
 
         p {
-            margin: 5px 0;
+            margin: 0px 10px;
         }
 
         img {
+            margin: 0px;
             max-width: 100%;
             height: auto;
         }
+
+        ol {
+            margin: 0;
+        }
+
+        ol li {
+            margin-left: 35px;
+        }
+        
     </style>
 </head>
 <body>
-    <div style="text-align:center;margin-bottom:10px"><img src="{{ public_path('assets/media/photos/logo-new.jpg') }}"  width="380" class="img-fluid" alt="" /></div>
+    <div style="text-align:center;margin:0px"><img src="{{ public_path('assets/media/photos/logo-new.jpg') }}"  width="300" alt="" /></div>
     {{-- <h1 style="text-align:center;">Kayani & Masood<br>Advocates | Barristers | Legal Consultants</h1> --}}
-    <h3> Daily Cause List, 
+    <h4> Daily Cause List, 
         {{ \Carbon\Carbon::parse($from)->format('l, d F Y') }}
         {{-- -
         {{ \Carbon\Carbon::parse($to)->format('l, d F Y') }} --}}
-     </h3>
-    @foreach($groupedCases as $region => $cases)
-        <h2>{{ strtoupper($region) }}</h2>
+     </h4>
+    <h3> District Courts </h3>
+    <ol>
+        @foreach($groupedCases as $region => $cases)
+            <h2>{{ strtoupper($region) }}</h2>
 
-        @foreach($cases as $index => $case)
-            <h3> {{ $case->court->name }} (File#{{ $case->id }}) </h3>
-            <p>
-                {{ $index + 1 }}. {{ $case->case_number }} {{ $case->applicant }} vs {{ $case->respondent }} <br>
-            </p>
-            <p style="text-decoration: underline;">
-                ({{ $case->notes }})
-            </p>
+            @foreach($cases as $index => $case)
+                <h3> {{ $case->court?->name }} (File# ) </h3>
+                <li>
+                    <p>
+                        {{ $case->case_number }} {{ $case->applicant }} vs {{ $case->respondent }} <br>
+                    </p>
+                    <p style="text-decoration: underline;margin-bottom: 2px;">
+                        {{-- {{ \Carbon\Carbon::parse($case->hearing_date)->format('d F Y') }} - {{ $case->case_type }} --}}
+                        ({{ $case->notes }})
+                    </p>
+                </li>
+            @endforeach
         @endforeach
-    @endforeach
+    </ol>
 </body>
 </html>

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Illuminate\Support\Str;
 
 class CourtCaseImport implements  ToModel, WithStartRow , WithCalculatedFormulas
 {
@@ -22,32 +23,37 @@ class CourtCaseImport implements  ToModel, WithStartRow , WithCalculatedFormulas
     public function model(array $row)
     {
 
-        dd($row);
+        if (empty($row[0])) {
+            return null; // Skip rows where the first column is empty
+        }
+
         // If the row is an instance of \Maatwebsite\Excel\Row, get calculated values
         // Handle formulas in columns 2 (applicant), 3 (respondent), and 8 (districtName)
-        $caseNumber = $row[0];
-        $title = $row[1];
+        $caseNumber = isset($row[0]) ? trim($row[0]) : null;
+        $title = isset($row[1]) ? trim($row[1]) : ' ';
+        $applicant = isset($row[2]) ? trim($row[2]) : ' ';
+        $respondent = isset($row[3]) ? trim($row[3]) : ' ';
+        $caseType = isset($row[4]) ? trim($row[4]) : null;
+        $status = isset($row[5]) ? trim($row[5]) : "In Progress";
+        $hearingDate = isset($row[6]) && !empty($row[6]) ? date('Y-m-d',strtotime(trim($row[6]))) : null;
+        $notes = isset($row[7]) ? trim($row[7]) : null;
+        $districtName = isset($row[8]) ? trim($row[8]) : '';
+        $courtName = isset($row[9]) ? trim(explode('/', $row[9])[0]) : '';
+        // Find or create district and court
 
-        $applicant = (isset($row[2]) && is_object($row[2]) && $row[2] instanceof Cell && $row[2]->isFormula()) ? $row[2]->getCalculatedValue() : ($row[2] ?? null);
-        $respondent = (isset($row[3]) && is_object($row[3]) && $row[3] instanceof Cell && $row[3]->isFormula()) ? $row[3]->getCalculatedValue() : ($row[3] ?? null);
+        $district = null;
+        $court = null;
+        if(!empty($districtName)){
 
-        $caseType = $row[4];
-        $status = $row[5] ?? 'In Progress';
-        $hearingDate = $row[6] ?? null;
-        $notes = $row[7] ?? null;
-
-        $districtName = (isset($row[8]) && $row[8] instanceof Cell && $row[8]->isFormula()) ? $row[8]->getCalculatedValue() : ($row[8] ?? null);
-        $courtName = $row[9];
-
-        dd($applicant, $respondent, $districtName);
-        $district = District::firstOrCreate(
-            ['name' => $districtName],
-            ['slug' => \Str::slug($districtName)]
-        );
-        $court = Court::firstOrCreate(
-            ['name' => $courtName, 'district_id' => $district->id],
-            ['district_id' => $district->id]
-        );
+            $district = District::firstOrCreate(
+                ['name' => $districtName],
+                ['slug' => Str::slug($districtName)]
+            );
+            $court = Court::firstOrCreate(
+                ['name' => $courtName, 'district_id' => $district->id],
+                ['district_id' => $district->id]
+            );
+        }
 
         return new CourtCase([
             'case_number' => $caseNumber,
@@ -62,6 +68,7 @@ class CourtCaseImport implements  ToModel, WithStartRow , WithCalculatedFormulas
             'court_id' => $court ? $court->id : null,
             'user_id' => Auth::id(),
             'created_by' => Auth::id(),
+            'is_migrated' => 1,
         ]);
     }
 
