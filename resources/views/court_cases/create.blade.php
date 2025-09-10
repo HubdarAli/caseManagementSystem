@@ -66,9 +66,9 @@
 
                         <div class="col-md-6 mt-3">
                             <label class="form-label" for="case_type">Case Type <span class="text-danger">*</span></label>
-                            {{-- <input type="text" class="form-control" id="case_type" name="case_type"
-                                   placeholder="Civil/Criminal etc." value="{{ old('case_type') }}"> --}}
-                            <select class="form-control" id="case_type" name="case_type">
+                            <input type="text" class="form-control" id="case_type" name="case_type"
+                                   placeholder="Civil/Criminal etc." value="{{ old('case_type') }}">
+                            {{-- <select class="form-control" id="case_type" name="case_type">
                                 <option value="">-- Select Case Type --</option>
                                 <option value="Civil Suit" {{ old('case_type') == 'Civil Suit' ? 'selected' : '' }}>Civil Suit</option>
                                 <option value="Civil Appeal" {{ old('case_type') == 'Civil Appeal' ? 'selected' : '' }}>Civil Appeal</option>
@@ -81,7 +81,7 @@
                                 <option value="Arbitration" {{ old('case_type') == 'Arbitration' ? 'selected' : '' }}>Arbitration</option>
                                 <option value="PPC" {{ old('case_type') == 'PPC' ? 'selected' : '' }}>PPC</option>
                                 <option value="Other" {{ old('case_type') == 'Other' ? 'selected' : '' }}>Other</option>
-                            </select>
+                            </select> --}}
                         </div>
 
                         <div class="col-md-6 mt-3">
@@ -103,6 +103,17 @@
                             </span>
                         </div>
 
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="counsel">Counsel</label>
+                            <input type="text" class="form-control" id="counsel" name="counsel"
+                                   placeholder="Enter Counsel" value="{{ old('counsel') }}">
+                        
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="file_no">File No</label>
+                            <input type="text" class="form-control" id="file_no" name="file_no"
+                                   placeholder="Enter File No" value="{{ old('file_no') }}">
+                        </div>
                         <div class="col-md-6 mt-3">
                             <label class="form-label" for="district_id">District <span class="text-danger">*</span></label>
                             <select class="form-control" id="district_id" name="district_id">
@@ -145,6 +156,7 @@
                             <label class="form-label" for="notes">Notes</label>
                             <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Enter any notes...">{{ old('notes') }}</textarea>
                         </div>
+                        
                     </div>
 
                     <div class="row mt-4 text-end">

@@ -21,6 +21,8 @@ class CourtCase extends Model
         'status',
         'hearing_date',
         'notes',
+        'counsel',
+        'file_no',
         'is_migrated',
         'user_id',
         'district_id',

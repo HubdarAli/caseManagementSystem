@@ -25,7 +25,7 @@ class CourtCaseController extends Controller
 
             if ($request->ajax()) {
 
-                $cases = CourtCase::with(['user', 'district', 'court'])->latest()->get();
+                $cases = CourtCase::with(['district:id,name', 'court:id,district_id,name'])->select('court_cases.*')->latest();//->get();
                 return DataTables::of($cases)
                     ->addIndexColumn()
                     ->editColumn('district_id', function ($cases) {
@@ -40,8 +40,14 @@ class CourtCaseController extends Controller
                         }
                         return \Carbon\Carbon::parse($cases->hearing_date)->format('d M, Y');
                     })
+                    ->filterColumn('hearing_date', function ($query, $keyword) {
+                        $query->whereRaw("DATE(hearing_date) LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->orderColumn('hearing_date', function ($query, $order) {
+                        $query->orderBy('hearing_date', $order);
+                    })
                     ->editColumn('status', function ($cases) {
-                        
+
                         //status
                         $statusClasses = [
                             'Open' => 'badge bg-warning',
@@ -103,7 +109,7 @@ class CourtCaseController extends Controller
                             </div>';
                         return $actions;
                     })
-                    ->rawColumns(['action', 'status','hearing_date'])
+                    ->rawColumns(['action', 'status', 'hearing_date'])
                     ->make(true);
             }
         } catch (Exception $e) {
@@ -135,6 +141,8 @@ class CourtCaseController extends Controller
             'status' => 'required|string|max:255',
             'hearing_date' => 'nullable|date',
             'notes' => 'nullable|string',
+            'counsel' => 'nullable|string|max:255',
+            'file_no' => 'nullable|string|max:255',
             'district_id' => 'required|exists:districts,id',
             'court_id' => 'required|exists:courts,id',
         ]);
@@ -180,6 +188,8 @@ class CourtCaseController extends Controller
             'status' => 'required|string|max:255',
             'hearing_date' => 'nullable|date',
             'notes' => 'nullable|string',
+            'counsel' => 'nullable|string|max:255',
+            'file_no' => 'nullable|string|max:255',
             'district_id' => 'required|exists:districts,id',
             'court_id' => 'required|exists:courts,id',
         ]);
@@ -220,13 +230,21 @@ class CourtCaseController extends Controller
             ->when($to, fn($q) => $q->whereDate('hearing_date', '<=', $to))
             ->get();
 
-        // Grouping by region (based on court name or region column)
-        $groupedCases = $courtCases->groupBy(function ($case) {
-            return strtoupper($case->court->district->name ?? 'Other'); // or a `region` column
+        // Grouping by district name
+        $districtOrder = ['SOUTH', 'CENTRAL', 'EAST', 'WEST', 'MALIR', 'SPECIAL'];
+        $groupedCases = $courtCases->groupBy(function ($case) use ($districtOrder) {
+            $districtName = strtoupper($case->court->district->name ?? '');
+            return in_array($districtName, $districtOrder) ? $districtName : 'SPECIAL';
+        });
+
+        // Custom sort order
+        $groupedCases = $groupedCases->sortBy(function ($cases, $district) use ($districtOrder) {
+            $index = array_search($district, $districtOrder);
+            return $index !== false ? $index : count($districtOrder);
         });
 
         // return View('court_cases.pdf', compact('groupedCases','from','to'));
-        $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases','from','to'))->setPaper('a4');
+        $pdf = Pdf::loadView('court_cases.pdf', compact('groupedCases', 'from', 'to'))->setPaper('a4');
 
         return $pdf->download('court-cases.pdf');
     }

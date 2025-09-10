@@ -62,8 +62,12 @@
             <h2>{{ strtoupper($region) }}</h2>
 
             @foreach($cases as $index => $case)
-                <h3> {{ $case->court?->name }} (File# ) </h3>
+                <h3> {{ $case->court?->name }} (File# {{ $case->file_no }}) </h3>
                 <li>
+                    <p style="text-decoration: underline;margin-bottom: 2px;">
+                        ({{ $case->counsel }})
+                    </p>
+
                     <p>
                         {{ $case->case_number }} {{ $case->applicant }} vs {{ $case->respondent }} <br>
                     </p>

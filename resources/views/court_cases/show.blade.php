@@ -62,9 +62,20 @@
                         <div class="col-md-6 mt-3">
                             <label class="form-label" for="hearing_date">Next Hearing Date</label>
                             <input type="date" class="form-control" id="hearing_date" name="hearing_date"
-                                   value="{{ old('hearing_date',$court_case->hearing_date) }}">
+                                   value="{{ old('hearing_date',$court_case->hearing_date) }}" disabled>
                         </div>
 
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="counsel">Counsel</label>
+                            <input type="text" class="form-control" id="counsel" name="counsel"
+                                   placeholder="Enter Counsel" value="{{ old('counsel', $court_case->counsel) }}" disabled>
+                        
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label" for="file_no">File#</label>
+                            <input type="text" class="form-control" id="file_no" name="file_no"
+                                   placeholder="Enter File No" value="{{ old('file_no' , $court_case->file_no) }}" disabled>
+                        </div>
                         <div class="col-md-6 mt-3">
                             <label class="form-label" for="district_id">District </label>
                             <input type="text" class="form-control" id="title" name="title"

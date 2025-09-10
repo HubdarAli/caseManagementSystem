@@ -111,14 +111,26 @@
                 scrollX: true,
                 ajax: "{{ route('courts-cases.index') }}",
                 columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
+                    { data: 'DT_RowIndex', name: 'id', className: "text-center" },
                     { data: 'case_number', name: 'case_number' },
                     { data: 'title', name: 'title' },
                     { data: 'applicant', name: 'applicant' },
                     { data: 'respondent', name: 'respondent' },
                     { data: 'case_type', name: 'case_type' },
-                    { data: 'court_id', name: 'court_id' },
-                    { data: 'district_id', name: 'district_id' },
+                    { 
+                        data: 'court.name', 
+                        name: 'court.name',
+                        render: function(data, type, row) {
+                            return data ? data : 'N/A';
+                        }
+                    },
+                    { 
+                        data: 'district.name', 
+                        name: 'district.name',
+                        render: function(data, type, row) {
+                            return data ? data : 'N/A';
+                        }
+                    },
                     { 
                         data: 'hearing_date', 
                         name: 'hearing_date',
